@@ -8,10 +8,10 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Microsoft.Owin.Security.OAuth;
 using Owin;
-using Assignement2.Providers;
-using Assignement2.Models;
+using Assignment2.Providers;
+using Assignment2.Models;
 
-namespace Assignement2
+namespace Assignment2
 {
     public partial class Startup
     {

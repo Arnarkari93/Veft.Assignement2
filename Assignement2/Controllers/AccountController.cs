@@ -13,11 +13,11 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
-using Assignement2.Models;
-using Assignement2.Providers;
-using Assignement2.Results;
+using Assignment2.Models;
+using Assignment2.Providers;
+using Assignment2.Results;
 
-namespace Assignement2.Controllers
+namespace Assignment2.Controllers
 {
     [Authorize]
     [RoutePrefix("api/Account")]

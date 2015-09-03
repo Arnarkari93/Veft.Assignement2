@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assignement2", "Assignement2\Assignement2.csproj", "{BBBCF354-9D39-4D7B-B873-D1CD51066D7B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assignment2", "Assignement2\Assignment2.csproj", "{BBBCF354-9D39-4D7B-B873-D1CD51066D7B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.Models", "API.Models\API.Models.csproj", "{5C4518C5-FC22-4B9A-AD73-F2270BEEA643}"
 EndProject

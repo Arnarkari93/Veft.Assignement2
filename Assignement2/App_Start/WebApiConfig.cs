@@ -6,7 +6,7 @@ using System.Web.Http;
 using Microsoft.Owin.Security.OAuth;
 using Newtonsoft.Json.Serialization;
 
-namespace Assignement2
+namespace Assignment2
 {
     public static class WebApiConfig
     {

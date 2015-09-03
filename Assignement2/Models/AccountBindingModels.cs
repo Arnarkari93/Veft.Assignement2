@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
-namespace Assignement2.Models
+namespace Assignment2.Models
 {
     // Models used as parameters to AccountController actions.
 

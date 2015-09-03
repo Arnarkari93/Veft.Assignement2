@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Assignement2.Models
+namespace Assignment2.Models
 {
     // Models returned by AccountController actions.
 
