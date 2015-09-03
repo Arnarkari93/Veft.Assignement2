@@ -9,9 +9,9 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
-using Assignement2.Models;
+using Assignment2.Models;
 
-namespace Assignement2.Providers
+namespace Assignment2.Providers
 {
     public class ApplicationOAuthProvider : OAuthAuthorizationServerProvider
     {

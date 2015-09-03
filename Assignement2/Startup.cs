@@ -4,9 +4,9 @@ using System.Linq;
 using Microsoft.Owin;
 using Owin;
 
-[assembly: OwinStartup(typeof(Assignement2.Startup))]
+[assembly: OwinStartup(typeof(Assignment2.Startup))]
 
-namespace Assignement2
+namespace Assignment2
 {
     public partial class Startup
     {

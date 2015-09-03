@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace Assignement2
+namespace Assignment2
 {
     public class BundleConfig
     {

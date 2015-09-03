@@ -1,6 +1,6 @@
 using System;
 
-namespace Assignement2.Areas.HelpPage.ModelDescriptions
+namespace Assignment2.Areas.HelpPage.ModelDescriptions
 {
     /// <summary>
     /// Describes a type model.

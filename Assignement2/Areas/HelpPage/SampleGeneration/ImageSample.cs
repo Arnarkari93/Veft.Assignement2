@@ -1,6 +1,6 @@
 using System;
 
-namespace Assignement2.Areas.HelpPage
+namespace Assignment2.Areas.HelpPage
 {
     /// <summary>
     /// This represents an image sample on the help page. There's a display template named ImageSample associated with this class.
