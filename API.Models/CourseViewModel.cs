@@ -14,7 +14,6 @@ namespace API.Models
         // [Required]
         public int CouresID { get; set; }
 
-
         /// <summary>
         /// 
         /// </summary>
