@@ -8,5 +8,6 @@ namespace API.Models
 {
     class StudentDTO
     {
+        public int ID { get; set; }
     }
 }
