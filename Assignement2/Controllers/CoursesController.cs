@@ -1,10 +1,12 @@
-﻿using System;
+﻿using API.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
+
 namespace Assignment2.Controllers
 {
     [RoutePrefix("api/v1/courses")]
@@ -12,7 +14,7 @@ namespace Assignment2.Controllers
     {
         #region Private methods and properties
 
-        private static List<CourseDTO> _courses;
+        private static List<CourseDTO>_courses;
 
         /// <summary>
         /// This method gets the course with the given id.

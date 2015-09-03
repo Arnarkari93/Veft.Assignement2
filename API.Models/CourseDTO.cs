@@ -10,7 +10,11 @@ namespace API.Models
     /// <summary>
     /// This class represents an item in a list of courses
     /// </summary>
-    class CourseDTO
+    public class CourseDTO
     {
+        CourseDTO()
+        {
+
+        }
     }
 }

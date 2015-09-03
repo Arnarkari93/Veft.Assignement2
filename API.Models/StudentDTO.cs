@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace API.Models
 {
-    class StudentDTO
+    public class StudentDTO
     {
         public int ID { get; set; }
     }
