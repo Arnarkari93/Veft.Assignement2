@@ -30,6 +30,12 @@ namespace API.Services
                     }).ToList();
         }
 
+
+        /// <summary>
+        /// This method gets a single student with the provided id
+        /// </summary>
+        /// <param name="id">The id of the student</param>
+        /// <returns>A course with the provided id</returns>
         public CourseDTO GetCourseByID(int id)
         {
             return (from course in _db.Courses
@@ -37,12 +43,21 @@ namespace API.Services
                     where course.ID == id
                     select new CourseDTO
                     {
-
+                        ID = course.ID,
+                        TemplateID = courseTemplate.TemplateID,
+                        Name = courseTemplate.Name,
+                        StartDate = course.StartDate,
+                        EndDate = course.EndDate,
                     }).SingleOrDefault();
         }
 
         public CourseDTO AddCourse(CourseViewModel course)
         {
+            // Check if the course exsists
+            if (!_db.CourseTemplates.Any(x => x.TemplateID == course.CouresID))
+            {
+                // TODO: throw some error.
+            }
 
             _db.Courses.Add(new Entities.Course
             {
@@ -62,7 +77,8 @@ namespace API.Services
         public void DeleteCourse(CourseViewModel course)
         {
             _db.Courses.Remove((from c in _db.Courses
-                                where c.ID == course.CouresID
+                                join ct in _db.CourseTemplates on c.TemplateID equals ct.ID
+                                where ct.TemplateID == course.CouresID
                                 select c).Single());
             _db.SaveChanges();
         }
