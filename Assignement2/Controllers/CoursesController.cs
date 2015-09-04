@@ -66,25 +66,25 @@ namespace Assignment2.Controllers
             return Created(location, course);
         }
 
-        ///// <summary>
-        ///// This method updates the given course properties for a single given course
-        ///// </summary>
-        ///// <param name="editedCourse">The edited course</param>
-        ///// <returns>200 if successful</returns>
-        //[HttpPut]
-        //[Route("{id:int}")]
-        //[ResponseType(typeof(Course))]
-        //public IHttpActionResult UpdateCourse(int id, Course editedCourse)
-        //{
-        //    if (!ModelState.IsValid) { throw new HttpResponseException(HttpStatusCode.PreconditionFailed); }
+        /// <summary>
+        /// This method updates the given course properties for a single given course
+        /// </summary>
+        /// <param name="editedCourse">The edited course</param>
+        /// <returns>200 if successful</returns>
+        [HttpPut]
+        [Route("{id:int}")]
+        [ResponseType(typeof(UpdateCourseViewModel))]
+        public IHttpActionResult UpdateCourse(int id, UpdateCourseViewModel editedCourse)
+        {
+            if (!ModelState.IsValid) { throw new HttpResponseException(HttpStatusCode.PreconditionFailed); }
 
-        //    var index = _courses.FindIndex(x => x.ID == id);
-        //    if (index == -1) { throw new HttpResponseException(HttpStatusCode.NotFound); }
-        //    editedCourse.ID = id;
-        //    _courses[index] = editedCourse;
+            CourseDetailsDTO course = _service.UpdateCourse(id, editedCourse);
+            // TODO : Try/catch
+            
+            var location = Url.Link("GetCourse", new { id = course.ID });
 
-        //    return Ok();
-        //}
+            return Created(location, course);
+        }
 
         ///// <summary>
         ///// This method deletes the course with the given id   
