@@ -115,12 +115,14 @@ namespace API.Services
             };
         }
 
-        public void DeleteCourse(CourseViewModel course)
+        public void DeleteCourse(int id)
         {
-            _db.Courses.Remove((from c in _db.Courses
-                                join ct in _db.CourseTemplates on c.TemplateID equals ct.ID
-                                where ct.TemplateID == course.CourseID
-                                select c).Single());
+            Entities.Course course = _db.Courses.SingleOrDefault(x => x.ID == id);
+            if (course == null)
+            {
+                // todo : throw exception
+            }
+            _db.Courses.Remove(course);
             _db.SaveChanges();
         }
 

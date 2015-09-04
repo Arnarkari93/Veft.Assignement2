@@ -86,17 +86,16 @@ namespace Assignment2.Controllers
             return Created(location, course);
         }
 
-        ///// <summary>
-        ///// This method deletes the course with the given id   
-        ///// </summary>
-        ///// <param name="id">The id of the course</param>
-        //[HttpDelete]
-        //[Route("{id:int}", Name="DeleteCourse" )]
-        //public void DeleteCourse(int id)
-        //{
-        //    var course = _GetCourseById(id); // this may throw a not found exception
-        //    _courses.Remove(course);
-        //}
+        /// <summary>
+        /// This method deletes the course with the given id   
+        /// </summary>
+        /// <param name="id">The id of the course</param>
+        [HttpDelete]
+        [Route("{id:int}", Name = "DeleteCourse")]
+        public void DeleteCourse(int id)
+        {
+            _service.DeleteCourse(id); // this may throw a not found exception
+        }
 
         ///// <summary>
         ///// This method gets the course with the given id
