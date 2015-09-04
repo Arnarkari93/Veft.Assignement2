@@ -44,6 +44,11 @@ namespace API.Models
         public DateTime EndDate { get; set; }
 
         /// <summary>
+        /// The number of students in the course.
+        /// </summary>
+        public int StudentCount { get; set; }
+
+        /// <summary>
         /// Repersents a list of student registerd in the course
         /// </summary>
         public List<StudentDTO> Students { get; set; }

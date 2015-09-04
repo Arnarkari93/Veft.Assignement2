@@ -28,5 +28,10 @@ namespace API.Models
         /// </summary>
         public string Description { get; set; }
 
+        /// <summary>
+        /// The count of Students in the course
+        /// </summary>
+        public int StudentCount { get; set; }
+
     }
 }
