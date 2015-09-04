@@ -11,12 +11,18 @@ namespace API.Services
     /// </summary>
     public class CoursesServiceProvider
     {
+
+        private readonly AppDataContext _db = new AppDataContext();
         /// <summary>
         /// 
         /// </summary>
         /// <param name="semester"></param>
         /// <returns></returns>
         public List<CourseDTO> GetCoursesBySemester(string semester = null) {
+            if (String.IsNullOrWhiteSpace(semester))
+            {
+                semester = "20153";
+            }
 
             return new List<CourseDTO>();
         }
