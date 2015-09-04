@@ -97,51 +97,37 @@ namespace Assignment2.Controllers
             _service.DeleteCourse(id); // this may throw a not found exception
         }
 
-        ///// <summary>
-        ///// This method gets the course with the given id
-        ///// </summary>
-        ///// <param name="id">id of the course</param>
-        ///// <returns>A single course</returns>
-        //[HttpGet]
-        //[Route("{id:int}", Name="GetCourse")]
-        //public IHttpActionResult GetCouse(int id)
-        //{
-        //    return Ok(_GetCourseById(id));
-        //}
+        /// <summary>
+        /// Get a list of all the students in a given course
+        /// </summary>
+        /// <param name="id">id of the course</param>
+        /// <returns>List of students in the course</returns>
+        [HttpGet]
+        [Route("{id:int}/students", Name = "GetStudentsInCourse")]
+        public IHttpActionResult GetStudentsInCourse(int id)
+        {
+            List<StudentDTO> students = _service.GetStudentInCourse(id); // this may throw a not found exception
+            return Ok(students);
+        }
 
-        ///// <summary>
-        ///// Get a list of all the students in a given course
-        ///// </summary>
-        ///// <param name="id">id of the course</param>
-        ///// <returns>List of students in the course</returns>
-        //[HttpGet]
-        //[Route("{id:int}/students", Name="GetStudentsInCourse")]
-        //public IHttpActionResult GetStudentsInCourse(int id)
-        //{
-        //    var course = _GetCourseById(id); // this may throw a not found exception
-        //    if (course.Students == null) { throw new HttpResponseException(HttpStatusCode.NotFound); }
-        //    return Ok(course.Students);
-        //}
+        /// <summary>
+        /// Adds a student to a given course
+        /// </summary>
+        /// <param name="id">id of the course</param>
+        /// <param name="newStudent">The student to be added</param>
+        /// <returns>List of the students in the course with the added student</returns>
+        [HttpPost]
+        [Route("{id:int}/students", Name = "AddStudentToCourse")]
+        public IHttpActionResult AddStudentToCourse(int id, StudentViewModel newStudent)
+        {
+            if (!ModelState.IsValid) { throw new HttpResponseException(HttpStatusCode.PreconditionFailed); }
 
-        ///// <summary>
-        ///// Adds a student to a given course
-        ///// </summary>
-        ///// <param name="id">id of the course</param>
-        ///// <param name="newStudent">The student to be added</param>
-        ///// <returns>List of the students in the course with the added student</returns>
-        //[HttpPost]
-        //[Route("{id:int}/students", Name="AddStudentToCourse")]
-        //public IHttpActionResult AddStudentToCourse(int id, Student newStudent)
-        //{
-        //    if (!ModelState.IsValid) { throw new HttpResponseException(HttpStatusCode.PreconditionFailed); }
+            CourseDetailsDTO course = _service.AddStudentToCourse(id, newStudent);
+           
+            var location = Url.Link("GetStudentsInCourse", new { id = course.ID });
 
-        //    var course = _GetCourseById(id);
-        //    if (course.Students == null) { course.Students = new List<Student>(); }  
-        //    course.Students.Add(newStudent); // adding student to the list of students for the course
-        //    var location = Url.Link("GetStudentsInCourse", new { id = course.ID });
-
-        //    return Created(location, course.Students);
-        //}
+            return Created(location, course);
+        }
         #endregion
     }
 }
