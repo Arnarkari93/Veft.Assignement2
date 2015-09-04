@@ -84,7 +84,7 @@ namespace API.Services
         }
 
         /// <summary>
-        /// This method gets all the courses that are thought on the semester given.
+        /// This method gets all the courses that are taught on the given semster.
         /// If no semester is given, then the default is the current semester.
         /// </summary>
         /// <param name="semester">The semester for the filter</param>
