@@ -61,10 +61,13 @@ namespace API.Services
 
             _db.Courses.Add(new Entities.Course
             {
-
+                ID = _db.Courses.Max(x => x.ID) + 1,
+                TemplateID = _db.CourseTemplates.Where(x => x.TemplateID == course.CouresID).Select(x => x.ID).Single(),
+                Semester = course.Semseter,
+                StartDate = course.StartDate,
+                EndDate = course.EndDate
             });
-
-
+            
             _db.SaveChanges();
             return null;
         }
