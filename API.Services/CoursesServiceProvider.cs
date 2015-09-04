@@ -18,16 +18,39 @@ namespace API.Services
         #region Course only related methods
         public List<CourseDTO> GetCourses()
         {
-            return null;
+            return (from course in _db.Courses
+                    join courseTemplate in _db.CourseTemplates on course.TemplateID equals courseTemplate.ID
+                    select new CourseDTO
+                    {
+                        ID = course.ID,
+                        TemplateID = courseTemplate.TemplateID,
+                        Name = courseTemplate.Name,
+                        StartDate = course.StartDate,
+                        EndDate = course.EndDate
+                    }).ToList();
         }
 
         public CourseDTO GetCourseByID(int id)
         {
-            return null;
+            return (from course in _db.Courses
+                    join courseTemplate in _db.CourseTemplates on course.TemplateID equals courseTemplate.ID
+                    where course.ID == id
+                    select new CourseDTO
+                    {
+
+                    }).SingleOrDefault();
         }
 
         public CourseDTO AddCourse(CourseViewModel course)
         {
+
+            _db.Courses.Add(new Entities.Course
+            {
+
+            });
+
+
+            _db.SaveChanges();
             return null;
         }
 
@@ -38,7 +61,10 @@ namespace API.Services
 
         public void DeleteCourse(CourseViewModel course)
         {
-
+            _db.Courses.Remove((from c in _db.Courses
+                                where c.ID == course.CouresID
+                                select c).Single());
+            _db.SaveChanges();
         }
 
         /// <summary>
@@ -47,7 +73,8 @@ namespace API.Services
         /// </summary>
         /// <param name="semester">The semester for the filter</param>
         /// <returns>A list of courses</returns>
-        public List<CourseDTO> GetCoursesBySemester(string semester = null) {
+        public List<CourseDTO> GetCoursesBySemester(string semester = null)
+        {
             if (String.IsNullOrWhiteSpace(semester))
             {
                 semester = "20153";
