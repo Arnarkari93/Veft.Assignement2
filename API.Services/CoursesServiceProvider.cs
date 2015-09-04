@@ -54,31 +54,56 @@ namespace API.Services
         public CourseDTO AddCourse(CourseViewModel course)
         {
             // Check if the course exsists
-            if (!_db.CourseTemplates.Any(x => x.TemplateID == course.CouresID))
+            var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.TemplateID == course.CourseID);
+            if (courseTemplate == null )
             {
                 // TODO: throw some error.
             }
 
             _db.Courses.Add(new Entities.Course
             {
-
-            });
-
-
+                ID = _db.Courses.Max(x => x.ID) + 1,
+                TemplateID = courseTemplate.ID,
+                Semester = course.Semseter,
+                StartDate = course.StartDate,
+                EndDate = course.EndDate
+            }); 
             _db.SaveChanges();
             return null;
         }
 
-        public CourseDTO UpdateCourse(CourseViewModel course)
+        public CourseDetailsDTO UpdateCourse(int courseID, UpdateCourseViewModel course)
         {
-            return null;
+            Entities.Course c = _db.Courses.SingleOrDefault(x => x.ID == courseID);
+            c.StartDate = course.StartDate;
+            c.EndDate = course.EndDate;
+
+            // Check if the course tamplate exsists
+            var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.ID == c.TemplateID);
+            if (courseTemplate == null)
+            {
+                // todo: throw some error
+            }
+
+            // If all is successfull, we save our changes
+            _db.SaveChanges();
+
+            return new CourseDetailsDTO
+            {   
+                ID = courseTemplate.TemplateID,
+                Name = courseTemplate.Name,
+                Description = courseTemplate.Description,
+                StartDate = course.StartDate,
+                EndDate = course.EndDate,
+                StudentCount = _db.StudentEnrollment.Count(x => x.CourseID == courseID)
+            };
         }
 
         public void DeleteCourse(CourseViewModel course)
         {
             _db.Courses.Remove((from c in _db.Courses
                                 join ct in _db.CourseTemplates on c.TemplateID equals ct.ID
-                                where ct.TemplateID == course.CouresID
+                                where ct.TemplateID == course.CourseID
                                 select c).Single());
             _db.SaveChanges();
         }

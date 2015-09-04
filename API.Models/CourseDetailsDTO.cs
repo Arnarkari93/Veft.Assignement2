@@ -9,13 +9,13 @@ namespace API.Models
     /// <summary>
     /// This class represnets a single course, and contains various details about the course
     /// </summary>
-    class CourseDetailsDTO
+    public class CourseDetailsDTO
     {
         /// <summary>
         /// Id of the course
         /// Example: T-514-VEFT
         /// </summary>
-        public int ID { get; set; }
+        public string ID { get; set; }
 
         /// <summary>
         /// Name of the course
@@ -27,6 +27,16 @@ namespace API.Models
         /// Description for a single course
         /// </summary>
         public string Description { get; set; }
+
+        /// <summary>
+        /// Repersents the start date for a single course
+        /// </summary>
+        public DateTime StartDate { get; set; }
+
+        /// <summary>
+        /// Repersents the end date for a single course
+        /// </summary>
+        public DateTime EndDate { get; set; }
 
         /// <summary>
         /// The count of Students in the course

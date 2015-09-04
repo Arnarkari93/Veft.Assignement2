@@ -13,7 +13,7 @@ namespace API.Models
         /// Example: T-514-VEFT
         /// </summary>
         [Required]
-        public string CouresID { get; set; }
+        public string CourseID { get; set; }
 
         /// <summary>
         /// Example: 20151

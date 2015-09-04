@@ -47,11 +47,5 @@ namespace API.Models
         /// The number of students in the course.
         /// </summary>
         public int StudentCount { get; set; }
-
-        /// <summary>
-        /// Repersents a list of student registerd in the course
-        /// </summary>
-        public List<StudentDTO> Students { get; set; }
-
     }
 }
