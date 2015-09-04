@@ -114,7 +114,14 @@ namespace API.Services
         #region Course and Student related functions
         public List<StudentDTO> GetStudentInCourse(int courseID)
         {
-            return null;
+            return (from se in _db.StudentEnrollment
+                                   join s in _db.Students on se.StudentID equals s.ID
+                                   where se.CourseID == courseID
+                                   select new StudentDTO
+                                   {
+                                        SSN = s.SSN,
+                                        Name = s.Name    
+                                   }).ToList();
         }
 
         public void AddStudentToCourse(int courseID, StudentViewModel student)
