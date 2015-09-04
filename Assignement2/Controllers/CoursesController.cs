@@ -1,4 +1,5 @@
 ﻿using API.Models;
+using API.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace Assignment2.Controllers
     {
         #region Private methods and properties
 
+        private static CoursesServiceProvider _service;
         private static List<CourseDTO>_courses;
 
         /// <summary>
@@ -22,113 +24,47 @@ namespace Assignment2.Controllers
         /// </summary>
         /// <param name="id">id of the course</param>
         /// <returns>a single course</returns>
-        private CourseDTO _GetCourseById(int id)
+        private IHttpActionResult _GetCourseById(int id)
         {
-            // Throw error if there are no courses
-            if (_courses == null) { throw new HttpResponseException(HttpStatusCode.NotFound); }
-
-            // Get the course
-            var course = _courses.Where(x => x.ID == id).SingleOrDefault();
-            // Throw error if the course dose not exsits
-            if (course == null) { throw new HttpResponseException(HttpStatusCode.NotFound); }
-
-            return course;
+            CourseDetailsDTO course = _service.GetCourseByID(id);
+            if (course == null)
+            {
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
+            return Ok(course);
         }
         #endregion
 
         #region public methods
-        //public CoursesController()
-        //{
-        //    if (_courses == null)
-        //    {
-        //        _courses = new List<Course>
-        //        {
-        //            new Course
-        //            {
-        //                ID = 1,
-        //                Name =  "Web services",
-        //                TemplateID = "T-514-VEFT",
-        //                StartDate = DateTime.Now,
-        //                EndDate = DateTime.Now.AddMonths(3),
-        //                Students = new List<Student>
-        //                {
-        //                    new Student
-        //                    {
-        //                        Name = "Mike Cohn",
-        //                        SSN = "1209626666"
-        //                    },
-        //                    new Student
-        //                    {
-        //                        Name = "Renee Cohn",
-        //                        SSN = "0606726666"
-        //                    }
-        //                }
-        //            },
-        //            new Course
-        //            {
-        //                ID = 2,
-        //                Name =  "Computer Networks",
-        //                TemplateID = "T-409-TSAM",
-        //                StartDate = DateTime.Now,
-        //                EndDate = DateTime.Now.AddMonths(3),
-        //                Students = new List<Student>
-        //                {
-        //                    new Student
-        //                    {
-        //                        Name = "Mike Cohn",
-        //                        SSN = "1209626666"
-        //                    },
-        //                    new Student
-        //                    {
-        //                        Name = "Renee Cohn",
-        //                        SSN = "0606726666"
-        //                    }
-        //                }
-        //            },
-        //            new Course
-        //            {
-        //                ID = 3,
-        //                Name =  "Software Design and Implementation",
-        //                TemplateID = "T-302-HONN",
-        //                StartDate = DateTime.Now,
-        //                EndDate = DateTime.Now.AddMonths(3)
-        //            }
-        //        };
-        //    }
-        //}
 
-        ///// <summary>
-        ///// This method gets a list of avalible courses
-        ///// </summary>
-        ///// <returns>A list of all courses</returns>
-        //[HttpGet]
-        //[Route("")]
-        //public IHttpActionResult GetCourses()
-        //{
-        //    return Ok(_courses);
-        //}
+        /// <summary>
+        /// This method gets a list of avalible courses
+        /// </summary>
+        /// <returns>A list of all courses</returns>
+        [HttpGet]
+        [Route("")]
+        public IHttpActionResult GetCourses()
+        {
+            return Ok(_service.GetCourses());
+        }
 
-        ///// <summary>
-        ///// This method addes a new course the list of courses
-        ///// </summary>
-        ///// <param name="newCourse">The new course</param>
-        ///// <returns>The location of the new course</returns>
-        //[HttpPost]
-        //[Route("")]
-        //public IHttpActionResult AddCourse(Course newCourse)
-        //{
-        //    if (!ModelState.IsValid) { throw new HttpResponseException(HttpStatusCode.PreconditionFailed); }
+        /// <summary>
+        /// This method addes a new course the list of courses
+        /// </summary>
+        /// <param name="newCourse">The new course</param>
+        /// <returns>The location of the new course</returns>
+        [HttpPost]
+        [Route("")]
+        public IHttpActionResult AddCourse(CourseViewModel newCourse)
+        {
+            if (!ModelState.IsValid) { throw new HttpResponseException(HttpStatusCode.PreconditionFailed); }
 
-        //    newCourse.ID = _courses.Any() ? _courses.Max(x => x.ID) + 1 : 0; // get a new id
-            
-        //    if (newCourse == null) { throw new HttpResponseException(HttpStatusCode.PreconditionFailed); }
-        //    // adding course to the list
-        //    _courses.Add(newCourse);
-        //    // get the location 
-        //    var location = Url.Link("GetCourse", new { id = newCourse.ID });
+            CourseDetailsDTO course = _service.AddCourse(newCourse); // todo catch error
 
-        //    return Created(location, newCourse);
-        //}
+            var location = Url.Link("GetCourse", new { id = course.ID });
+
+            return Created(location, course);
+        }
 
         ///// <summary>
         ///// This method updates the given course properties for a single given course

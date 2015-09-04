@@ -36,40 +36,51 @@ namespace API.Services
         /// </summary>
         /// <param name="id">The id of the student</param>
         /// <returns>A course with the provided id</returns>
-        public CourseDTO GetCourseByID(int id)
+        public CourseDetailsDTO GetCourseByID(int id)
         {
             return (from course in _db.Courses
                     join courseTemplate in _db.CourseTemplates on course.TemplateID equals courseTemplate.ID
                     where course.ID == id
-                    select new CourseDTO
+                    select new CourseDetailsDTO
                     {
                         ID = course.ID,
                         TemplateID = courseTemplate.TemplateID,
                         Name = courseTemplate.Name,
+                        Description = courseTemplate.Description,
                         StartDate = course.StartDate,
-                        EndDate = course.EndDate,
+                        EndDate = course.EndDate
                     }).SingleOrDefault();
         }
 
-        public CourseDTO AddCourse(CourseViewModel course)
+        public CourseDetailsDTO AddCourse(CourseViewModel newCourse)
         {
             // Check if the course exists
-            var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.TemplateID == course.CourseID);
+            var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.TemplateID == newCourse.CourseID);
             if (courseTemplate == null )
             {
                 // TODO: throw some error.
             }
-
-            _db.Courses.Add(new Entities.Course
+            Entities.Course course = new Entities.Course
             {
-                ID = _db.Courses.Max(x => x.ID) + 1,
+                ID = _db.Courses.Any() ? _db.Courses.Max(x => x.ID) + 1 : 1,
                 TemplateID = courseTemplate.ID,
-                Semester = course.Semseter,
-                StartDate = course.StartDate,
-                EndDate = course.EndDate
-            }); 
+                Semester = newCourse.Semseter,
+                StartDate = newCourse.StartDate,
+                EndDate = newCourse.EndDate
+            };
+            _db.Courses.Add(course); 
+
             _db.SaveChanges();
-            return null;
+
+            return new CourseDetailsDTO
+            {
+                ID = course.ID,
+                TemplateID = courseTemplate.TemplateID,
+                Name = courseTemplate.Name,
+                Description = courseTemplate.Description,
+                StartDate = newCourse.StartDate,
+                EndDate = newCourse.EndDate
+            };
         }
 
         public CourseDetailsDTO UpdateCourse(int courseID, UpdateCourseViewModel course)
