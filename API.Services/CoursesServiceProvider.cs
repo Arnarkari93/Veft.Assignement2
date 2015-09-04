@@ -83,18 +83,14 @@ namespace API.Services
             };
         }
 
-        public CourseDetailsDTO UpdateCourse(int courseID, UpdateCourseViewModel updatedCourse)
+        public CourseDetailsDTO UpdateCourse(int courseID, UpdateCourseViewModel course)
         {
-            Entities.Course course = _db.Courses.SingleOrDefault(x => x.ID == courseID);
-            if (course == null)
-            {
-                // todo: throw error
-            }
-            course.StartDate = updatedCourse.StartDate;
-            course.EndDate = updatedCourse.EndDate;
+            Entities.Course c = _db.Courses.SingleOrDefault(x => x.ID == courseID);
+            c.StartDate = course.StartDate;
+            c.EndDate = course.EndDate;
 
             // Check if the course tamplate exists
-            var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.ID == course.TemplateID);
+            var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.ID == c.TemplateID);
             if (courseTemplate == null)
             {
                 // todo: throw some error
@@ -105,24 +101,21 @@ namespace API.Services
 
             return new CourseDetailsDTO
             {   
-                ID = courseID, 
-                TemplateID = courseTemplate.TemplateID,
+                ID = courseTemplate.TemplateID,
                 Name = courseTemplate.Name,
                 Description = courseTemplate.Description,
-                StartDate = updatedCourse.StartDate,
-                EndDate = updatedCourse.EndDate,
+                StartDate = course.StartDate,
+                EndDate = course.EndDate,
                 StudentCount = _db.StudentEnrollment.Count(x => x.CourseID == courseID)
             };
         }
 
-        public void DeleteCourse(int id)
+        public void DeleteCourse(CourseViewModel course)
         {
-            Entities.Course course = _db.Courses.SingleOrDefault(x => x.ID == id);
-            if (course == null)
-            {
-                // todo : throw exception
-            }
-            _db.Courses.Remove(course);
+            _db.Courses.Remove((from c in _db.Courses
+                                join ct in _db.CourseTemplates on c.TemplateID equals ct.ID
+                                where ct.TemplateID == course.CourseID
+                                select c).Single());
             _db.SaveChanges();
         }
 
@@ -167,10 +160,11 @@ namespace API.Services
                                    }).ToList();
         }
 
-        public StudentDTO AddStudentToCourse(int courseID, StudentViewModel newStudent)
+        public CourseDetailsDTO AddStudentToCourse(int courseID, StudentViewModel newStudent)
         {
             // Check if the course exists
             var course = _db.Courses.SingleOrDefault(x => x.ID == courseID);
+            var courseDetails = _db.CourseTemplates.SingleOrDefault(x => x.ID == course.TemplateID);
             if (course == null)
             {
                 // Todo: throw error
@@ -191,10 +185,14 @@ namespace API.Services
 
             _db.SaveChanges();
 
-            return new StudentDTO
+            return new CourseDetailsDTO
             {
-                Name = student.Name,
-                SSN = student.SSN
+                ID = course.ID,
+                TemplateID = courseDetails.TemplateID,
+                Name = courseDetails.Name,
+                Description = courseDetails.Description,
+                StartDate = course.StartDate,
+                EndDate = course.EndDate
             };
         }
         #endregion
