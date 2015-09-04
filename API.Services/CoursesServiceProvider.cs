@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using API.Models;
+using API.Services.Repositories;
 
 namespace API.Services
 {
@@ -24,7 +25,17 @@ namespace API.Services
                 semester = "20153";
             }
 
-            return new List<CourseDTO>();
+            //var courses = (from c in _db.Courses
+            //               join ct in _db.CourseTemplates on c.ID equals ct.TemplateID
+            //               where c.Semester == semester
+            //               select new CourseDTO
+            //               {
+            //                   ID = c.ID,
+
+
+            //              }).ToList();
+
+            return null;
         }
     }
 }
