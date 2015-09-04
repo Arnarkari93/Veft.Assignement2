@@ -83,14 +83,18 @@ namespace API.Services
             };
         }
 
-        public CourseDetailsDTO UpdateCourse(int courseID, UpdateCourseViewModel course)
+        public CourseDetailsDTO UpdateCourse(int courseID, UpdateCourseViewModel updatedCourse)
         {
-            Entities.Course c = _db.Courses.SingleOrDefault(x => x.ID == courseID);
-            c.StartDate = course.StartDate;
-            c.EndDate = course.EndDate;
+            Entities.Course course = _db.Courses.SingleOrDefault(x => x.ID == courseID);
+            if (course == null)
+            {
+                // todo: throw error
+            }
+            course.StartDate = updatedCourse.StartDate;
+            course.EndDate = updatedCourse.EndDate;
 
             // Check if the course tamplate exists
-            var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.ID == c.TemplateID);
+            var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.ID == course.TemplateID);
             if (courseTemplate == null)
             {
                 // todo: throw some error
@@ -101,11 +105,12 @@ namespace API.Services
 
             return new CourseDetailsDTO
             {   
-                ID = courseTemplate.TemplateID,
+                ID = courseID, 
+                TemplateID = courseTemplate.TemplateID,
                 Name = courseTemplate.Name,
                 Description = courseTemplate.Description,
-                StartDate = course.StartDate,
-                EndDate = course.EndDate,
+                StartDate = updatedCourse.StartDate,
+                EndDate = updatedCourse.EndDate,
                 StudentCount = _db.StudentEnrollment.Count(x => x.CourseID == courseID)
             };
         }
