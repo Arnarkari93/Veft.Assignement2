@@ -23,7 +23,7 @@ namespace Assignment2.Controllers
         /// </summary>
         /// <param name="id">id of the course</param>
         /// <returns>a single course</returns>
-        private Course _GetCourseById(int id)
+        private CourseDTO _GetCourseById(int id)
         {
             // Throw error if there are no courses
             if (_courses == null) { throw new HttpResponseException(HttpStatusCode.NotFound); }
