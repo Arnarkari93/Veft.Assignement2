@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,9 +13,40 @@ namespace API.Models
     /// </summary>
     public class CourseDTO
     {
-        CourseDTO()
-        {
+        /// <summary>
+        /// Repersents the name of a single course
+        /// Examble: "Introduction to machine learning"
+        /// </summary>
+        public string Name { get; set; }
 
-        }
+
+        /// <summary>
+        /// Repersents the template id of a single course
+        /// Examble: T-504-ITML
+        /// </summary>
+        public string TemplateID { get; set; }
+
+        /// <summary>
+        /// Repersents nothing, just an id for a single course
+        /// </summary>
+        public int ID { get; set; }
+
+
+        /// <summary>
+        /// Repersents the start date for a single course
+        /// </summary>
+        public DateTime StartDate { get; set; }
+
+
+        /// <summary>
+        /// Repersents the end date for a single course
+        /// </summary>
+        public DateTime EndDate { get; set; }
+
+        /// <summary>
+        /// Repersents a list of student registerd in the course
+        /// </summary>
+        public List<StudentDTO> Students { get; set; }
+
     }
 }
