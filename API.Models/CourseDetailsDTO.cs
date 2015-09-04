@@ -11,8 +11,21 @@ namespace API.Models
     /// </summary>
     class CourseDetailsDTO
     {
+        /// <summary>
+        /// Id of the course
+        /// Example: T-514-VEFT
+        /// </summary>
         public int ID { get; set; }
+
+        /// <summary>
+        /// Name of the course
+        /// Example: Web services
+        /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Description for a single course
+        /// </summary>
         public string Description { get; set; }
 
     }
