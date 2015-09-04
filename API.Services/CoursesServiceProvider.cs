@@ -25,17 +25,19 @@ namespace API.Services
                 semester = "20153";
             }
 
-            //var courses = (from c in _db.Courses
-            //               join ct in _db.CourseTemplates on c.ID equals ct.TemplateID
-            //               where c.Semester == semester
-            //               select new CourseDTO
-            //               {
-            //                   ID = c.ID,
+            var courses = (from c in _db.Courses
+                           join ct in _db.CourseTemplates on c.TemplateID equals ct.ID
+                           where c.Semester == semester
+                           select new CourseDTO
+                           {
+                               ID = c.ID,
+                               TemplateID = ct.TemplateID,
+                               Name = ct.Name,
+                               StartDate = c.StartDate,
+                               EndDate = c.EndDate
+                           }).ToList();
 
-
-            //              }).ToList();
-
-            return null;
+            return courses;
         }
     }
 }
