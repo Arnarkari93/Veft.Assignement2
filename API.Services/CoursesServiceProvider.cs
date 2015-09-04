@@ -53,7 +53,7 @@ namespace API.Services
 
         public CourseDTO AddCourse(CourseViewModel course)
         {
-            // Check if the course exsists
+            // Check if the course exists
             var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.TemplateID == course.CourseID);
             if (courseTemplate == null )
             {
@@ -78,7 +78,7 @@ namespace API.Services
             c.StartDate = course.StartDate;
             c.EndDate = course.EndDate;
 
-            // Check if the course tamplate exsists
+            // Check if the course tamplate exists
             var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.ID == c.TemplateID);
             if (courseTemplate == null)
             {
@@ -149,9 +149,35 @@ namespace API.Services
                                    }).ToList();
         }
 
-        public void AddStudentToCourse(int courseID, StudentViewModel student)
+        public StudentDTO AddStudentToCourse(int courseID, StudentViewModel newStudent)
         {
+            // Check if the course exists
+            var course = _db.Courses.SingleOrDefault(x => x.ID == courseID);
+            if (course == null)
+            {
+                // Todo: throw error
+            }
 
+            // Check if the student exists
+            var student = _db.Students.SingleOrDefault(x => x.SSN == newStudent.SSN);
+            if (student == null)
+            {
+                // todo : throw error
+            }
+
+            _db.StudentEnrollment.Add(new Entities.StudentEnrollment
+            {
+                StudentID = student.ID,
+                CourseID = course.ID
+            });
+
+            _db.SaveChanges();
+
+            return new StudentDTO
+            {
+                Name = student.Name,
+                SSN = student.SSN
+            };
         }
         #endregion
 
