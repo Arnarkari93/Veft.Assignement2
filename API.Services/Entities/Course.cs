@@ -19,9 +19,9 @@ namespace API.Services.Entities
         public int ID { get; set; }
         /// <summary>
         /// The template id for a course. Foreign key to the CourseTemplate table
-        /// Example "T-504-VEFT"
+        /// Note : not the actual TemplateID, just a key joining the tables.
         /// </summary>
-        public string TemplateID { get; set; }
+        public int TemplateID { get; set; }
         /// <summary>
         /// The start date for a course
         /// </summary>
