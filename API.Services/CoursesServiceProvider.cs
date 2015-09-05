@@ -13,12 +13,17 @@ namespace API.Services
     public class CoursesServiceProvider
     {
 
-        private readonly AppDataContext _db = new AppDataContext();
+        private readonly AppDataContext _db;
+
+        public CoursesServiceProvider()
+        {
+            _db = new AppDataContext();
+        }
 
         #region Course only related methods
         public List<CourseDTO> GetCourses()
         {
-            return (from course in _db.Courses
+            var courses = (from course in _db.Courses
                     join courseTemplate in _db.CourseTemplates on course.TemplateID equals courseTemplate.ID
                     select new CourseDTO
                     {
@@ -27,7 +32,8 @@ namespace API.Services
                         Name = courseTemplate.Name,
                         StartDate = course.StartDate,
                         EndDate = course.EndDate
-                    }).ToList();
+                    });
+            return courses.Any() ? courses.ToList() : new List<CourseDTO>();
         }
 
 
