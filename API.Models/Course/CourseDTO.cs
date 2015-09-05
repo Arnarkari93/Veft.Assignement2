@@ -31,6 +31,11 @@ namespace API.Models
         /// </summary>
         public int ID { get; set; }
 
+        /// <summary>
+        /// The semester of the course
+        /// Example: 20151
+        /// </summary>
+        public string Semester { get; set; }
 
         /// <summary>
         /// Repersents the start date for a single course

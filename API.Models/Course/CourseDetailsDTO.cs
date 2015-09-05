@@ -32,6 +32,12 @@ namespace API.Models
         public string Description { get; set; }
 
         /// <summary>
+        /// The semester of the course
+        /// Example: 20151
+        /// </summary>
+        public string Semester { get; set; }
+
+        /// <summary>
         /// Repersents the start date for a single course
         /// Example "2015-08-17"
         /// </summary>
@@ -47,6 +53,11 @@ namespace API.Models
         /// The count of Students in the course
         /// </summary>
         public int StudentCount { get; set; }
+
+        /// <summary>
+        /// A list of student registered in the course
+        /// </summary>
+        public List<StudentDTO> Students { get; set; }
 
     }
 }

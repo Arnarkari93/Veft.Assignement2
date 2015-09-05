@@ -31,10 +31,12 @@ namespace API.Services
                                ID = course.ID,
                                TemplateID = courseTemplate.TemplateID,
                                Name = courseTemplate.Name,
+                               Semester = course.Semester,
                                StartDate = course.StartDate,
-                               EndDate = course.EndDate
-                           });
-            return courses.Any() ? courses.ToList() : new List<CourseDTO>();
+                               EndDate = course.EndDate,
+                               StudentCount = GetStudentInCourse(course.ID).Count()
+                           }).ToList();
+            return courses;
         }
 
 
@@ -48,14 +50,18 @@ namespace API.Services
             var course = (from c in _db.Courses
                           join ct in _db.CourseTemplates on c.TemplateID equals ct.ID
                           where c.ID == id
+                          let students = GetStudentInCourse(c.ID)
                           select new CourseDetailsDTO
                           {
                               ID = c.ID,
                               TemplateID = ct.TemplateID,
                               Name = ct.Name,
                               Description = ct.Description,
+                              Semester = c.Semester,
                               StartDate = c.StartDate,
-                              EndDate = c.EndDate
+                              EndDate = c.EndDate,
+                              StudentCount = students.Count(),
+                              Students = students
                           }).SingleOrDefault();
             if(course == null)
             {
@@ -94,8 +100,10 @@ namespace API.Services
                 TemplateID = courseTemplate.TemplateID,
                 Name = courseTemplate.Name,
                 Description = courseTemplate.Description,
+                Semester = course.Semester,
                 StartDate = newCourse.StartDate,
-                EndDate = newCourse.EndDate
+                EndDate = newCourse.EndDate,
+                StudentCount = GetStudentInCourse(course.ID).Count()
             };
         }
         /// <summary>
@@ -126,6 +134,9 @@ namespace API.Services
                 throw new TemplateCourseNotFoundException();
             }
 
+            // Get list of students registered in the course
+            List<StudentDTO> students = GetStudentInCourse(course.ID);
+
             // If all is successfull, we save our changes
             _db.SaveChanges();
 
@@ -135,9 +146,11 @@ namespace API.Services
                 TemplateID = courseTemplate.TemplateID,
                 Name = courseTemplate.Name,
                 Description = courseTemplate.Description,
+                Semester = course.Semester,
                 StartDate = updateCourse.StartDate,
                 EndDate = updateCourse.EndDate,
-                StudentCount = _db.StudentEnrollment.Count(x => x.CourseID == courseID)
+                StudentCount = students.Count(),
+                Students = students 
             };
         }
         /// <summary>
@@ -180,8 +193,10 @@ namespace API.Services
                                ID = c.ID,
                                TemplateID = ct.TemplateID,
                                Name = ct.Name,
+                               Semester = c.Semester,
                                StartDate = c.StartDate,
-                               EndDate = c.EndDate
+                               EndDate = c.EndDate,
+                               StudentCount = GetStudentInCourse(c.ID).Count()
                            }).ToList();
 
             return courses;
@@ -220,14 +235,14 @@ namespace API.Services
             var courseDetails = _db.CourseTemplates.SingleOrDefault(x => x.ID == course.TemplateID);
             if (course == null)
             {
-                // Todo: throw error
+                throw new CourseNotFoundException();
             }
 
             // Check if the student exists
             var student = _db.Students.SingleOrDefault(x => x.SSN == newStudent.SSN);
             if (student == null)
             {
-                // todo : throw error
+                
             }
 
             _db.StudentEnrollment.Add(new Entities.StudentEnrollment
@@ -236,6 +251,8 @@ namespace API.Services
                 CourseID = course.ID
             });
 
+
+
             _db.SaveChanges();
 
             return new CourseDetailsDTO
@@ -243,9 +260,11 @@ namespace API.Services
                 ID = course.ID,
                 TemplateID = courseDetails.TemplateID,
                 Name = courseDetails.Name,
+                Semester = course.Semester,
                 Description = courseDetails.Description,
                 StartDate = course.StartDate,
-                EndDate = course.EndDate
+                EndDate = course.EndDate,
+                StudentCount = 
             };
         }
         #endregion
