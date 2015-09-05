@@ -14,6 +14,11 @@ namespace API.Services.Entities
     class StudentEnrollment
     {
         /// <summary>
+        /// The Id of the enrollment
+        /// </summary>
+        public int ID { get; set; }
+
+        /// <summary>
         /// The ID of a student in the course
         /// </summary>
         public int StudentID { get; set; }

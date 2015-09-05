@@ -15,7 +15,12 @@ namespace Assignment2.Controllers
         #region Private methods and properties
 
         private static CoursesServiceProvider _service;
-        private static List<CourseDTO>_courses;
+       //private static List<CourseDTO>_courses;
+
+        public CoursesController()
+        {
+            _service = new CoursesServiceProvider();
+        }
 
         /// <summary>
         /// This method gets the course with the given id.
