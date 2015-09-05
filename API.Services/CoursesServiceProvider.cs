@@ -104,16 +104,23 @@ namespace API.Services
         /// Only start and end date are editable
         /// </summary>
         /// <param name="courseID">The ID of the course to edit</param>
-        /// <param name="course">a course with the information to edit</param>
+        /// <param name="updateCourse">a course with the information to edit</param>
         /// <returns></returns>
-        public CourseDetailsDTO UpdateCourse(int courseID, UpdateCourseViewModel course)
+        public CourseDetailsDTO UpdateCourse(int courseID, UpdateCourseViewModel updateCourse)
         {
-            Entities.Course c = _db.Courses.SingleOrDefault(x => x.ID == courseID);
-            c.StartDate = course.StartDate;
-            c.EndDate = course.EndDate;
+            // Get the course, throw exception if the course is not found
+            Entities.Course course = _db.Courses.SingleOrDefault(x => x.ID == courseID);
+            if (course == null)
+            {
+                throw new CourseNotFoundException();
+            }
 
-            // Check if the course tamplate exists
-            var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.ID == c.TemplateID);
+            // Update the course
+            course.StartDate = updateCourse.StartDate;
+            course.EndDate = updateCourse.EndDate;
+
+            // Check if the course tamplate exists, throw exception if the coures template is not found
+            var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.ID == course.TemplateID);
             if (courseTemplate == null)
             {
                 throw new TemplateCourseNotFoundException();
@@ -124,28 +131,29 @@ namespace API.Services
 
             return new CourseDetailsDTO
             {
-                ID = c.ID,
+                ID = course.ID,
                 TemplateID = courseTemplate.TemplateID,
                 Name = courseTemplate.Name,
                 Description = courseTemplate.Description,
-                StartDate = course.StartDate,
-                EndDate = course.EndDate,
+                StartDate = updateCourse.StartDate,
+                EndDate = updateCourse.EndDate,
                 StudentCount = _db.StudentEnrollment.Count(x => x.CourseID == courseID)
             };
         }
         /// <summary>
         /// Deletes a course
-        /// Note that this is a course not a course template.
+        /// Note : This is a course not a course template.
         /// </summary>
         /// <param name="id">The ID of the course to delete</param>
         public void DeleteCourse(int id)
         {
+            // Get the course
             Entities.Course course = _db.Courses.SingleOrDefault(x => x.ID == id);
             if (course == null)
             {
                 throw new CourseNotFoundException();
             }
-            _db.Courses.Remove(course);
+            _db.Courses.Remove(course); // Remove the course
             _db.SaveChanges();
         }
 
@@ -157,11 +165,13 @@ namespace API.Services
         /// <returns>A list of courses</returns>
         public List<CourseDTO> GetCoursesBySemester(string semester = null)
         {
+            // Check if the semester is specified
             if (String.IsNullOrWhiteSpace(semester))
             {
-                semester = "20153";
+                semester = "20153"; 
             }
 
+            // Get all courses thought in the semester
             var courses = (from c in _db.Courses
                            join ct in _db.CourseTemplates on c.TemplateID equals ct.ID
                            where c.Semester == semester
