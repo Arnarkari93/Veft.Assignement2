@@ -55,6 +55,7 @@
     <Compile Include="Entities\CourseTemplate.cs" />
     <Compile Include="Entities\StudentEnrollment.cs" />
     <Compile Include="Exceptions\CourseNotFoundException.cs" />
+    <Compile Include="Exceptions\StudentNotFoundException.cs" />
     <Compile Include="Exceptions\TemplateCourseNotFoundException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AppDataContext.cs" />

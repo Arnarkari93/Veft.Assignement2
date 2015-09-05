@@ -112,7 +112,7 @@ namespace API.Services
             c.StartDate = course.StartDate;
             c.EndDate = course.EndDate;
 
-            // Check if the course tamplate exists
+            // Check if the course template exists
             var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.ID == c.TemplateID);
             if (courseTemplate == null)
             {
@@ -210,14 +210,14 @@ namespace API.Services
             var courseDetails = _db.CourseTemplates.SingleOrDefault(x => x.ID == course.TemplateID);
             if (course == null)
             {
-                // Todo: throw error
+                throw new CourseNotFoundException();
             }
 
             // Check if the student exists
             var student = _db.Students.SingleOrDefault(x => x.SSN == newStudent.SSN);
             if (student == null)
             {
-                // todo : throw error
+                throw new StudentNotFoundException();
             }
 
             _db.StudentEnrollment.Add(new Entities.StudentEnrollment
