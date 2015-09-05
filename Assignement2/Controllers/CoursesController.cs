@@ -102,8 +102,6 @@ namespace Assignment2.Controllers
             {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
-            
-
         }
 
         /// <summary>
