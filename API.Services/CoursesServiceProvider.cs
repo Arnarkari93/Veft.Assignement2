@@ -116,7 +116,7 @@ namespace API.Services
             var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.ID == c.TemplateID);
             if (courseTemplate == null)
             {
-                throw new CourseNotFoundException();
+                throw new TemplateCourseNotFoundException();
             }
 
             // If all is successfull, we save our changes
@@ -140,9 +140,12 @@ namespace API.Services
         /// <param name="id">The ID of the course to delete</param>
         public void DeleteCourse(int id)
         {
-            _db.Courses.Remove((from c in _db.Courses
-                                where c.ID == id
-                                select c).Single());
+            Entities.Course course = _db.Courses.SingleOrDefault(x => x.ID == id);
+            if (course == null)
+            {
+                throw new CourseNotFoundException();
+            }
+            _db.Courses.Remove(course);
             _db.SaveChanges();
         }
 
@@ -182,7 +185,14 @@ namespace API.Services
         /// <returns></returns>
         public List<StudentDTO> GetStudentInCourse(int courseID)
         {
-            return (from se in _db.StudentEnrollment
+            // Check if the course exists
+            if (_db.Courses.SingleOrDefault(x => x.ID == courseID) == null)
+            {
+                throw new CourseNotFoundException();
+            }
+
+            // Get the students in the course
+            List<StudentDTO> students = (from se in _db.StudentEnrollment
                     join s in _db.Students on se.StudentID equals s.ID
                     where se.CourseID == courseID
                     select new StudentDTO
@@ -190,6 +200,7 @@ namespace API.Services
                         SSN = s.SSN,
                         Name = s.Name
                     }).ToList();
+            return students;
         }
 
         public CourseDetailsDTO AddStudentToCourse(int courseID, StudentViewModel newStudent)

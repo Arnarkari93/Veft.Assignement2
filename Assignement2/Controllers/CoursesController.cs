@@ -112,7 +112,14 @@ namespace Assignment2.Controllers
         [Route("{id:int}", Name = "DeleteCourse")]
         public void DeleteCourse(int id)
         {
-            _service.DeleteCourse(id); // this may throw a not found exception
+            try
+            {
+                _service.DeleteCourse(id); // this may throw a not found exception
+            } 
+            catch (CourseNotFoundException e)
+            {
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
         }
 
         /// <summary>
@@ -124,8 +131,15 @@ namespace Assignment2.Controllers
         [Route("{id:int}/students", Name = "GetStudentsInCourse")]
         public IHttpActionResult GetStudentsInCourse(int id)
         {
-            List<StudentDTO> students = _service.GetStudentInCourse(id); // this may throw a not found exception
-            return Ok(students);
+            try
+            {
+                List<StudentDTO> students = _service.GetStudentInCourse(id); // this may throw a not found exception
+                return Ok(students);
+            } 
+            catch (CourseNotFoundException e)
+            {
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
         }
 
         /// <summary>
