@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using API.Models;
 using API.Services.Repositories;
+using API.Services.Exceptions;
 
 namespace API.Services
 {
@@ -24,15 +25,15 @@ namespace API.Services
         public List<CourseDTO> GetCourses()
         {
             var courses = (from course in _db.Courses
-                    join courseTemplate in _db.CourseTemplates on course.TemplateID equals courseTemplate.ID
-                    select new CourseDTO
-                    {
-                        ID = course.ID,
-                        TemplateID = courseTemplate.TemplateID,
-                        Name = courseTemplate.Name,
-                        StartDate = course.StartDate,
-                        EndDate = course.EndDate
-                    });
+                           join courseTemplate in _db.CourseTemplates on course.TemplateID equals courseTemplate.ID
+                           select new CourseDTO
+                           {
+                               ID = course.ID,
+                               TemplateID = courseTemplate.TemplateID,
+                               Name = courseTemplate.Name,
+                               StartDate = course.StartDate,
+                               EndDate = course.EndDate
+                           });
             return courses.Any() ? courses.ToList() : new List<CourseDTO>();
         }
 
@@ -44,18 +45,23 @@ namespace API.Services
         /// <returns>A course with the provided id</returns>
         public CourseDetailsDTO GetCourseByID(int id)
         {
-            return (from course in _db.Courses
-                    join courseTemplate in _db.CourseTemplates on course.TemplateID equals courseTemplate.ID
-                    where course.ID == id
-                    select new CourseDetailsDTO
-                    {
-                        ID = course.ID,
-                        TemplateID = courseTemplate.TemplateID,
-                        Name = courseTemplate.Name,
-                        Description = courseTemplate.Description,
-                        StartDate = course.StartDate,
-                        EndDate = course.EndDate
-                    }).SingleOrDefault();
+            var course = (from c in _db.Courses
+                          join ct in _db.CourseTemplates on c.TemplateID equals ct.ID
+                          where c.ID == id
+                          select new CourseDetailsDTO
+                          {
+                              ID = c.ID,
+                              TemplateID = ct.TemplateID,
+                              Name = ct.Name,
+                              Description = ct.Description,
+                              StartDate = c.StartDate,
+                              EndDate = c.EndDate
+                          }).SingleOrDefault();
+            if(course == null)
+            {
+                throw new CourseNotFoundException();
+            }
+            return course;
         }
         /// <summary>
         /// This method adds a Course with the information from the CourseViewModel
@@ -66,7 +72,7 @@ namespace API.Services
         {
             // Check if the course exists
             var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.TemplateID == newCourse.CourseID);
-            if (courseTemplate == null )
+            if (courseTemplate == null)
             {
                 // TODO: throw some error.
             }
@@ -78,7 +84,7 @@ namespace API.Services
                 StartDate = newCourse.StartDate,
                 EndDate = newCourse.EndDate
             };
-            _db.Courses.Add(course); 
+            _db.Courses.Add(course);
 
             _db.SaveChanges();
 
@@ -117,7 +123,7 @@ namespace API.Services
             _db.SaveChanges();
 
             return new CourseDetailsDTO
-            {   
+            {
                 ID = c.ID,
                 TemplateID = courseTemplate.TemplateID,
                 Name = courseTemplate.Name,
@@ -177,13 +183,13 @@ namespace API.Services
         public List<StudentDTO> GetStudentInCourse(int courseID)
         {
             return (from se in _db.StudentEnrollment
-                                   join s in _db.Students on se.StudentID equals s.ID
-                                   where se.CourseID == courseID
-                                   select new StudentDTO
-                                   {
-                                        SSN = s.SSN,
-                                        Name = s.Name    
-                                   }).ToList();
+                    join s in _db.Students on se.StudentID equals s.ID
+                    where se.CourseID == courseID
+                    select new StudentDTO
+                    {
+                        SSN = s.SSN,
+                        Name = s.Name
+                    }).ToList();
         }
 
         public CourseDetailsDTO AddStudentToCourse(int courseID, StudentViewModel newStudent)

@@ -1,5 +1,6 @@
 ﻿using API.Models;
 using API.Services;
+using API.Services.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,12 +34,13 @@ namespace Assignment2.Controllers
         [Route("{id:int}", Name ="GetCourse")]
         public IHttpActionResult _GetCourseById(int id)
         {
-            CourseDetailsDTO course = _service.GetCourseByID(id);
-            if (course == null)
+            try {
+                return Ok(_service.GetCourseByID(id));
+            }
+            catch (CourseNotFoundException e)
             {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
-            return Ok(course);
         }
         #endregion
 
