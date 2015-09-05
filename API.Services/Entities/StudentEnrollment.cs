@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace API.Services.Entities
 {
     /// <summary>
-    /// This class represents a student and course relationship
+    /// This class represents a student and course relationship in the database
     /// </summary>
     [Table("StudentEnrollment")]
     class StudentEnrollment

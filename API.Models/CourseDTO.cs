@@ -34,12 +34,14 @@ namespace API.Models
 
         /// <summary>
         /// Repersents the start date for a single course
+        /// Example "2015-11-17"
         /// </summary>
         public DateTime StartDate { get; set; }
 
 
         /// <summary>
         /// Repersents the end date for a single course
+        /// Example "2015-08-17"
         /// </summary>
         public DateTime EndDate { get; set; }
 
