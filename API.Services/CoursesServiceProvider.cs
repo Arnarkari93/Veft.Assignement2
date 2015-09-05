@@ -116,7 +116,7 @@ namespace API.Services
             var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.ID == c.TemplateID);
             if (courseTemplate == null)
             {
-                // todo: throw some error
+                throw new CourseNotFoundException();
             }
 
             // If all is successfull, we save our changes
