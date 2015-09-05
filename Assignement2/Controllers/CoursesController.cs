@@ -68,11 +68,17 @@ namespace Assignment2.Controllers
         {
             if (!ModelState.IsValid) { throw new HttpResponseException(HttpStatusCode.PreconditionFailed); }
 
-            CourseDetailsDTO course = _service.AddCourse(newCourse); // todo catch error
+            try
+            {
+                CourseDetailsDTO course = _service.AddCourse(newCourse); // may throw exception
+                var location = Url.Link("GetCourse", new { id = course.ID });
+                return Created(location, course);
+            }
+            catch (TemplateCourseNotFoundException e)
+            {
+                throw new HttpResponseException(HttpStatusCode.PreconditionFailed);
+            }
 
-            var location = Url.Link("GetCourse", new { id = course.ID });
-
-            return Created(location, course);
         }
 
         /// <summary>
@@ -87,12 +93,17 @@ namespace Assignment2.Controllers
         {
             if (!ModelState.IsValid) { throw new HttpResponseException(HttpStatusCode.PreconditionFailed); }
 
-            CourseDetailsDTO course = _service.UpdateCourse(id, editedCourse);
-            // TODO : Try/catch
+            try {
+                CourseDetailsDTO course = _service.UpdateCourse(id, editedCourse);
+                var location = Url.Link("GetCourse", new { id = course.ID });
+                return Created(location, course);
+            }
+            catch (CourseNotFoundException e)
+            {
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
             
-            var location = Url.Link("GetCourse", new { id = course.ID });
 
-            return Created(location, course);
         }
 
         /// <summary>

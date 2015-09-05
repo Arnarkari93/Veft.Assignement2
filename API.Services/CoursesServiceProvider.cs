@@ -74,7 +74,7 @@ namespace API.Services
             var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.TemplateID == newCourse.CourseID);
             if (courseTemplate == null)
             {
-                // TODO: throw some error.
+                throw new TemplateCourseNotFoundException();
             }
             Entities.Course course = new Entities.Course
             {
