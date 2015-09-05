@@ -70,7 +70,7 @@ namespace API.Services
             {
                 ID = _db.Courses.Any() ? _db.Courses.Max(x => x.ID) + 1 : 1,
                 TemplateID = courseTemplate.ID,
-                Semester = newCourse.Semseter,
+                Semester = newCourse.Semester,
                 StartDate = newCourse.StartDate,
                 EndDate = newCourse.EndDate
             };

@@ -19,7 +19,7 @@ namespace API.Models
         /// Example: 20151
         /// </summary>
         [Required]
-        public string Semseter { get; set; }
+        public string Semester { get; set; }
 
         [Required]
         public DateTime StartDate { get; set; }
