@@ -29,7 +29,9 @@ namespace Assignment2.Controllers
         /// </summary>
         /// <param name="id">id of the course</param>
         /// <returns>a single course</returns>
-        private IHttpActionResult _GetCourseById(int id)
+        [HttpGet]
+        [Route("{id:int}", Name ="GetCourse")]
+        public IHttpActionResult _GetCourseById(int id)
         {
             CourseDetailsDTO course = _service.GetCourseByID(id);
             if (course == null)
