@@ -57,7 +57,11 @@ namespace API.Services
                         EndDate = course.EndDate
                     }).SingleOrDefault();
         }
-
+        /// <summary>
+        /// This method adds a Course with the information from the CourseViewModel
+        /// </summary>
+        /// <param name="newCourse">Course containing all the information needed to add a new course</param>
+        /// <returns></returns>
         public CourseDetailsDTO AddCourse(CourseViewModel newCourse)
         {
             // Check if the course exists
@@ -88,7 +92,14 @@ namespace API.Services
                 EndDate = newCourse.EndDate
             };
         }
-
+        /// <summary>
+        /// Updates a course that already exists
+        /// Note that this edits a Course, not a CourseTemplate.
+        /// Only start and end date are editable
+        /// </summary>
+        /// <param name="courseID">The ID of the course to edit</param>
+        /// <param name="course">a course with the information to edit</param>
+        /// <returns></returns>
         public CourseDetailsDTO UpdateCourse(int courseID, UpdateCourseViewModel course)
         {
             Entities.Course c = _db.Courses.SingleOrDefault(x => x.ID == courseID);
@@ -116,7 +127,11 @@ namespace API.Services
                 StudentCount = _db.StudentEnrollment.Count(x => x.CourseID == courseID)
             };
         }
-
+        /// <summary>
+        /// Deletes a course
+        /// Note that this is a course not a course template.
+        /// </summary>
+        /// <param name="id">The ID of the course to delete</param>
         public void DeleteCourse(int id)
         {
             _db.Courses.Remove((from c in _db.Courses
@@ -126,7 +141,7 @@ namespace API.Services
         }
 
         /// <summary>
-        /// This method gets all the courses that are taught on the given semster.
+        /// This method gets all the courses that are taught during the given semster.
         /// If no semester is given, then the default is the current semester.
         /// </summary>
         /// <param name="semester">The semester for the filter</param>
@@ -154,6 +169,11 @@ namespace API.Services
         }
         #endregion
         #region Course and Student related functions
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="courseID"></param>
+        /// <returns></returns>
         public List<StudentDTO> GetStudentInCourse(int courseID)
         {
             return (from se in _db.StudentEnrollment

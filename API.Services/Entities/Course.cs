@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace API.Services.Entities
 {
     /// <summary>
-    /// This class represents a course template in the database
+    /// This class represents the course table in the database
     /// </summary>
     [Table("Courses")]
     class Course
@@ -24,10 +24,12 @@ namespace API.Services.Entities
         public int TemplateID { get; set; }
         /// <summary>
         /// The start date for a course
+        /// Example "2015-08-17"
         /// </summary>
         public DateTime StartDate { get; set; }
         /// <summary>
         /// The end date for a course
+        /// Example "2015-11-08"
         /// </summary>
         public DateTime EndDate { get; set; }
         /// <summary>
