@@ -133,7 +133,7 @@ namespace Assignment2.Controllers
         {
             try
             {
-                List<StudentDTO> students = _service.GetStudentInCourse(id); // this may throw a not found exception
+                List<StudentDTO> students = _service.GetStudentsInCourse(id); // this may throw a not found exception
                 return Ok(students);
             } 
             catch (CourseNotFoundException e)

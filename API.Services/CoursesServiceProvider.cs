@@ -34,7 +34,7 @@ namespace API.Services
                                Semester = course.Semester,
                                StartDate = course.StartDate,
                                EndDate = course.EndDate,
-                               StudentCount = GetStudentInCourse(course.ID).Count()
+                               StudentCount = _db.StudentEnrollment.Count(x => x.CourseID == course.ID)
                            }).ToList();
             return courses;
         }
@@ -50,7 +50,6 @@ namespace API.Services
             var course = (from c in _db.Courses
                           join ct in _db.CourseTemplates on c.TemplateID equals ct.ID
                           where c.ID == id
-                          let students = GetStudentInCourse(c.ID)
                           select new CourseDetailsDTO
                           {
                               ID = c.ID,
@@ -60,8 +59,15 @@ namespace API.Services
                               Semester = c.Semester,
                               StartDate = c.StartDate,
                               EndDate = c.EndDate,
-                              StudentCount = students.Count(),
-                              Students = students
+                              StudentCount = _db.StudentEnrollment.Where(x => x.CourseID == c.ID).Count(),
+                              Students = (from sr in _db.StudentEnrollment
+                                          join s in _db.Students on sr.StudentID equals s.ID
+                                          where sr.CourseID == c.ID
+                                          select new StudentDTO
+                                          {
+                                              SSN  = s.SSN,
+                                              Name = s.Name
+                                          }).ToList()
                           }).SingleOrDefault();
             if(course == null)
             {
@@ -103,7 +109,7 @@ namespace API.Services
                 Semester = course.Semester,
                 StartDate = newCourse.StartDate,
                 EndDate = newCourse.EndDate,
-                StudentCount = GetStudentInCourse(course.ID).Count()
+                StudentCount = _db.StudentEnrollment.Count(x => x.CourseID == course.ID)
             };
         }
         /// <summary>
@@ -124,14 +130,14 @@ namespace API.Services
             }
 
             // Check if the course tamplate exists
-            var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.ID == c.TemplateID);
+            var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.ID == course.TemplateID);
             if (courseTemplate == null)
             {
                 throw new TemplateCourseNotFoundException();
             }
 
             // Get list of students registered in the course
-            List<StudentDTO> students = GetStudentInCourse(course.ID);
+            List<StudentDTO> students = GetStudentsInCourse(course.ID);
 
             // If all is successfull, we save our changes
             _db.SaveChanges();
@@ -145,8 +151,15 @@ namespace API.Services
                 Semester = course.Semester,
                 StartDate = updateCourse.StartDate,
                 EndDate = updateCourse.EndDate,
-                StudentCount = students.Count(),
-                Students = students 
+                StudentCount = _db.StudentEnrollment.Count(x => x.CourseID == course.ID),
+                Students = (from sr in _db.StudentEnrollment
+                            join s in _db.Students on sr.StudentID equals s.ID
+                            where sr.CourseID == course.ID
+                            select new StudentDTO
+                            {
+                                SSN = s.SSN,
+                                Name = s.Name
+                            }).ToList()
             };
         }
         /// <summary>
@@ -162,6 +175,13 @@ namespace API.Services
             {
                 throw new CourseNotFoundException();
             }
+
+            // Remove all the students from the course
+            foreach ( Entities.StudentEnrollment enrollment in _db.StudentEnrollment.Where(x => x.CourseID == course.ID))
+            {
+                _db.StudentEnrollment.Remove(enrollment);
+            }
+
             _db.Courses.Remove(course); // Remove the course
             _db.SaveChanges();
         }
@@ -192,7 +212,7 @@ namespace API.Services
                                Semester = c.Semester,
                                StartDate = c.StartDate,
                                EndDate = c.EndDate,
-                               StudentCount = GetStudentInCourse(c.ID).Count()
+                               StudentCount = _db.StudentEnrollment.Count(x => x.CourseID == c.ID)
                            }).ToList();
 
             return courses;
@@ -204,7 +224,7 @@ namespace API.Services
         /// </summary>
         /// <param name="courseID"></param>
         /// <returns></returns>
-        public List<StudentDTO> GetStudentInCourse(int courseID)
+        public List<StudentDTO> GetStudentsInCourse(int courseID)
         {
             // Check if the course exists
             if (_db.Courses.SingleOrDefault(x => x.ID == courseID) == null)
@@ -247,7 +267,7 @@ namespace API.Services
                 CourseID = course.ID
             });
 
-
+            List<StudentDTO> students = GetStudentsInCourse(course.ID);
 
             _db.SaveChanges();
 
@@ -260,7 +280,15 @@ namespace API.Services
                 Description = courseDetails.Description,
                 StartDate = course.StartDate,
                 EndDate = course.EndDate,
-                StudentCount = 
+                StudentCount = _db.StudentEnrollment.Count(x => x.CourseID == course.ID),
+                Students = (from sr in _db.StudentEnrollment
+                            join s in _db.Students on sr.StudentID equals s.ID
+                            where sr.CourseID == course.ID
+                            select new StudentDTO
+                            {
+                                SSN = s.SSN,
+                                Name = s.Name
+                            }).ToList()
             };
         }
         #endregion

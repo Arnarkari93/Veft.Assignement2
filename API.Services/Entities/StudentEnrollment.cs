@@ -10,7 +10,7 @@ namespace API.Services.Entities
     /// <summary>
     /// This class represents a student and course relationship in the database
     /// </summary>
-    [Table("StudentEnrollment")]
+    [Table("StudentEnrollments")]
     class StudentEnrollment
     {
         /// <summary>
