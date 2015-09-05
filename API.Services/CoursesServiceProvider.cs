@@ -89,14 +89,14 @@ namespace API.Services
             };
         }
 
-        public CourseDetailsDTO UpdateCourse(int courseID, UpdateCourseViewModel updatedCourse)
+        public CourseDetailsDTO UpdateCourse(int courseID, UpdateCourseViewModel course)
         {
-            Entities.Course course = _db.Courses.SingleOrDefault(x => x.ID == courseID);
-            course.StartDate = updatedCourse.StartDate;
-            course.EndDate = updatedCourse.EndDate;
+            Entities.Course c = _db.Courses.SingleOrDefault(x => x.ID == courseID);
+            c.StartDate = course.StartDate;
+            c.EndDate = course.EndDate;
 
             // Check if the course tamplate exists
-            var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.ID == course.TemplateID);
+            var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.ID == c.TemplateID);
             if (courseTemplate == null)
             {
                 // todo: throw some error
@@ -107,25 +107,21 @@ namespace API.Services
 
             return new CourseDetailsDTO
             {   
-                ID = course.ID,
+                ID = c.ID,
                 TemplateID = courseTemplate.TemplateID,
                 Name = courseTemplate.Name,
                 Description = courseTemplate.Description,
-                StartDate = updatedCourse.StartDate,
-                EndDate = updatedCourse.EndDate,
+                StartDate = course.StartDate,
+                EndDate = course.EndDate,
                 StudentCount = _db.StudentEnrollment.Count(x => x.CourseID == courseID)
             };
         }
 
         public void DeleteCourse(int id)
         {
-            Entities.Course course = _db.Courses.SingleOrDefault(x => x.ID == id);
-            if (course == null)
-            {
-                // todo: throw error
-            }
-
-            _db.Courses.Remove(course);
+            _db.Courses.Remove((from c in _db.Courses
+                                where c.ID == id
+                                select c).Single());
             _db.SaveChanges();
         }
 

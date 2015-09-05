@@ -11,6 +11,7 @@ namespace API.Models
     /// </summary>
     public class CourseDetailsDTO
     {
+        
         public int ID { get; set; }
 
         /// <summary>
