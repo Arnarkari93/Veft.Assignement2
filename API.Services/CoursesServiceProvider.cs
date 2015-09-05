@@ -123,12 +123,8 @@ namespace API.Services
                 throw new CourseNotFoundException();
             }
 
-            // Update the course
-            course.StartDate = updateCourse.StartDate;
-            course.EndDate = updateCourse.EndDate;
-
-            // Check if the course tamplate exists, throw exception if the coures template is not found
-            var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.ID == course.TemplateID);
+            // Check if the course tamplate exists
+            var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.ID == c.TemplateID);
             if (courseTemplate == null)
             {
                 throw new TemplateCourseNotFoundException();
@@ -242,7 +238,7 @@ namespace API.Services
             var student = _db.Students.SingleOrDefault(x => x.SSN == newStudent.SSN);
             if (student == null)
             {
-                
+                throw new StudentNotFoundException();
             }
 
             _db.StudentEnrollment.Add(new Entities.StudentEnrollment
