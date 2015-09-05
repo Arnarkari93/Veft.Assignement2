@@ -83,14 +83,14 @@ namespace API.Services
             };
         }
 
-        public CourseDetailsDTO UpdateCourse(int courseID, UpdateCourseViewModel course)
+        public CourseDetailsDTO UpdateCourse(int courseID, UpdateCourseViewModel updatedCourse)
         {
-            Entities.Course c = _db.Courses.SingleOrDefault(x => x.ID == courseID);
-            c.StartDate = course.StartDate;
-            c.EndDate = course.EndDate;
+            Entities.Course course = _db.Courses.SingleOrDefault(x => x.ID == courseID);
+            course.StartDate = updatedCourse.StartDate;
+            course.EndDate = updatedCourse.EndDate;
 
             // Check if the course tamplate exists
-            var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.ID == c.TemplateID);
+            var courseTemplate = _db.CourseTemplates.SingleOrDefault(x => x.ID == course.TemplateID);
             if (courseTemplate == null)
             {
                 // todo: throw some error
@@ -101,21 +101,25 @@ namespace API.Services
 
             return new CourseDetailsDTO
             {   
-                ID = courseTemplate.TemplateID,
+                ID = course.ID,
+                TemplateID = courseTemplate.TemplateID,
                 Name = courseTemplate.Name,
                 Description = courseTemplate.Description,
-                StartDate = course.StartDate,
-                EndDate = course.EndDate,
+                StartDate = updatedCourse.StartDate,
+                EndDate = updatedCourse.EndDate,
                 StudentCount = _db.StudentEnrollment.Count(x => x.CourseID == courseID)
             };
         }
 
-        public void DeleteCourse(CourseViewModel course)
+        public void DeleteCourse(int id)
         {
-            _db.Courses.Remove((from c in _db.Courses
-                                join ct in _db.CourseTemplates on c.TemplateID equals ct.ID
-                                where ct.TemplateID == course.CourseID
-                                select c).Single());
+            Entities.Course course = _db.Courses.SingleOrDefault(x => x.ID == id);
+            if (course == null)
+            {
+                // todo: throw error
+            }
+
+            _db.Courses.Remove(course);
             _db.SaveChanges();
         }
 
