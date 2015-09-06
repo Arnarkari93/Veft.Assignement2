@@ -22,6 +22,10 @@ namespace API.Services
         }
 
         #region Course only related methods
+        /// <summary>
+        /// This method gets all courses
+        /// </summary>
+        /// <returns>A list of all courses</returns>
         public List<CourseDTO> GetCourses()
         {
             var courses = (from course in _db.Courses
@@ -233,10 +237,10 @@ namespace API.Services
         #endregion
         #region Course and Student related functions
         /// <summary>
-        /// 
+        /// This method gets a list of students in the given course
         /// </summary>
-        /// <param name="courseID"></param>
-        /// <returns></returns>
+        /// <param name="courseID">The id of the course</param>
+        /// <returns>A list of students registered in the course</returns>
         public List<StudentDTO> GetStudentsInCourse(int courseID)
         {
             // Check if the course exists
@@ -257,6 +261,12 @@ namespace API.Services
             return students;
         }
 
+        /// <summary>
+        /// This method adds a student to a given course
+        /// </summary>
+        /// <param name="courseID">The id of the course</param>
+        /// <param name="newStudent">The student to be added</param>
+        /// <returns>Details about the course, including a list of all students registerd in the course</returns>
         public CourseDetailsDTO AddStudentToCourse(int courseID, StudentViewModel newStudent)
         {
             // Check if the course exists
