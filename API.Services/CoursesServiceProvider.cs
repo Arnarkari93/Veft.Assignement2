@@ -267,7 +267,7 @@ namespace API.Services
         /// <param name="courseID">The id of the course</param>
         /// <param name="newStudent">The student to be added</param>
         /// <returns>Details about the course, including a list of all students registerd in the course</returns>
-        public CourseDetailsDTO AddStudentToCourse(int courseID, StudentViewModel newStudent)
+        public StudentDTO AddStudentToCourse(int courseID, StudentViewModel newStudent)
         {
             // Check if the course exists
             var course = _db.Courses.SingleOrDefault(x => x.ID == courseID);
@@ -290,30 +290,39 @@ namespace API.Services
                 CourseID = course.ID
             });
 
-            List<StudentDTO> students = GetStudentsInCourse(course.ID);
-
             _db.SaveChanges();
 
-            return new CourseDetailsDTO
+            return new StudentDTO
             {
-                ID = course.ID,
-                TemplateID = courseDetails.TemplateID,
-                Name = courseDetails.Name,
-                Semester = course.Semester,
-                Description = courseDetails.Description,
-                StartDate = course.StartDate,
-                EndDate = course.EndDate,
-                StudentCount = _db.StudentEnrollment.Count(x => x.CourseID == course.ID),
-                Students = (from sr in _db.StudentEnrollment
-                            join s in _db.Students on sr.StudentID equals s.ID
-                            where sr.CourseID == course.ID
-                            select new StudentDTO
-                            {
-                                SSN = s.SSN,
-                                Name = s.Name
-                            }).ToList()
+                SSN = student.SSN,
+                Name = student.Name
             };
         }
+        
+        /// <summary>
+        /// Gets a student with the given SSN and that is registered in the given course
+        /// </summary>
+        /// <param name="courseID">The id of the course</param>
+        /// <param name="newStudent">The student</param>
+        /// <returns>The student</returns>
+        public StudentDTO GetStudentInCourse(int courseID, string studentSSN)
+        {
+            Entities.Course course = _db.Courses.SingleOrDefault(x => x.ID == courseID);
+            if (course == null) { throw new CourseNotFoundException(); }
+
+            StudentDTO student = (from s in _db.Students
+                                  join sr in _db.StudentEnrollment on s.ID equals sr.StudentID
+                                  where sr.CourseID == course.ID && s.SSN == studentSSN
+                                  select new StudentDTO
+                                  {
+                                      SSN = s.SSN,
+                                      Name = s.Name
+                                  }).SingleOrDefault();
+
+            if (student == null) { throw new StudentNotFoundException(); }
+            return student;
+        }
+
         #endregion
 
     }

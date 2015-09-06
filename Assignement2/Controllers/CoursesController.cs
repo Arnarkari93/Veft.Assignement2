@@ -56,7 +56,7 @@ namespace Assignment2.Controllers
                 var location = Url.Link("GetCourse", new { id = course.ID });
                 return Created(location, course);
             }
-            catch (TemplateCourseNotFoundException e)
+            catch (TemplateCourseNotFoundException)
             {
                 throw new HttpResponseException(HttpStatusCode.PreconditionFailed);
             }
@@ -85,13 +85,14 @@ namespace Assignment2.Controllers
         /// <param name="id">id of the course</param>
         /// <returns>a single course</returns>
         [HttpGet]
-        [Route("{id:int}", Name ="GetCourse")]
+        [Route("{id:int}", Name = "GetCourse")]
         public IHttpActionResult _GetCourseById(int id)
         {
-            try {
+            try
+            {
                 return Ok(_service.GetCourseByID(id));
             }
-            catch (CourseNotFoundException e)
+            catch (CourseNotFoundException)
             {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
@@ -112,12 +113,13 @@ namespace Assignment2.Controllers
                 throw new HttpResponseException(HttpStatusCode.PreconditionFailed);
             }
 
-            try {
+            try
+            {
                 CourseDetailsDTO course = _service.UpdateCourse(id, editedCourse);
                 var location = Url.Link("GetCourse", new { id = course.ID });
                 return Created(location, course);
             }
-            catch (CourseNotFoundException e)
+            catch (CourseNotFoundException)
             {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
@@ -134,7 +136,7 @@ namespace Assignment2.Controllers
             try
             {
                 _service.DeleteCourse(id); // this may throw a not found exception
-            } 
+            }
             catch (CourseNotFoundException)
             {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
@@ -160,8 +162,8 @@ namespace Assignment2.Controllers
             {
                 List<StudentDTO> students = _service.GetStudentsInCourse(id); // this may throw a not found exception
                 return Ok(students);
-            } 
-            catch (CourseNotFoundException e)
+            }
+            catch (CourseNotFoundException)
             {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
@@ -179,11 +181,40 @@ namespace Assignment2.Controllers
         {
             if (!ModelState.IsValid) { throw new HttpResponseException(HttpStatusCode.PreconditionFailed); }
 
-            CourseDetailsDTO course = _service.AddStudentToCourse(id, newStudent);
-           
-            var location = Url.Link("GetStudentsInCourse", new { id = course.ID });
+            try
+            {
+                StudentDTO student = _service.AddStudentToCourse(id, newStudent);
+                var location = Url.Link("GetStudentInCourse", new { id = id, ssn = student.SSN });
+                return Created(location, student);
+            }
+            catch (CourseNotFoundException)
+            {
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
+            catch (StudentNotFoundException)
+            {
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
+        }
+        #endregion
 
-            return Created(location, course);
+        #region Courses/{id}/students/{ssn}
+        [HttpGet]
+        [Route("{id:int}/students/{ssn}", Name = "GetStudentInCourse")]
+        public IHttpActionResult GetStudentInCourse(int id, string ssn)
+        {
+            try
+            {
+                return Ok(_service.GetStudentInCourse(id, ssn));
+            }
+            catch (CourseNotFoundException)
+            {
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
+            catch (StudentNotFoundException)
+            {
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
         }
         #endregion
     }
