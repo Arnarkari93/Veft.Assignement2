@@ -65,11 +65,11 @@ namespace API.Services
                                           where sr.CourseID == c.ID
                                           select new StudentDTO
                                           {
-                                              SSN  = s.SSN,
+                                              SSN = s.SSN,
                                               Name = s.Name
                                           }).ToList()
                           }).SingleOrDefault();
-            if(course == null)
+            if (course == null)
             {
                 throw new CourseNotFoundException();
             }
@@ -177,15 +177,26 @@ namespace API.Services
                 throw new CourseNotFoundException();
             }
 
-            _db.Database.BeginTransaction();
-            // Remove all the students from the course
-            foreach ( Entities.StudentEnrollment enrollment in _db.StudentEnrollment.Where(x => x.CourseID == course.ID))
+            using (var transaction = _db.Database.BeginTransaction())
             {
-                _db.StudentEnrollment.Remove(enrollment);
+                try
+                {
+                    // Remove all the students from the course
+                    foreach (Entities.StudentEnrollment enrollment in _db.StudentEnrollment.Where(x => x.CourseID == course.ID))
+                    {
+                        _db.StudentEnrollment.Remove(enrollment);
+                        _db.SaveChanges();
+                    }
+                    _db.Courses.Remove(course); // Remove the course
+                    _db.SaveChanges();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw new DeleteFromDatabaseException();
+                }
             }
-            _db.Courses.Remove(course); // Remove the course
-            _db.Database.CurrentTransaction.Commit();
-            _db.SaveChanges();
         }
 
         /// <summary>
@@ -199,7 +210,7 @@ namespace API.Services
             // Check if the semester is specified
             if (String.IsNullOrWhiteSpace(semester))
             {
-                semester = "20153"; 
+                semester = "20153";
             }
 
             // Get all courses thought in the semester
@@ -236,13 +247,13 @@ namespace API.Services
 
             // Get the students in the course
             List<StudentDTO> students = (from se in _db.StudentEnrollment
-                    join s in _db.Students on se.StudentID equals s.ID
-                    where se.CourseID == courseID
-                    select new StudentDTO
-                    {
-                        SSN = s.SSN,
-                        Name = s.Name
-                    }).ToList();
+                                         join s in _db.Students on se.StudentID equals s.ID
+                                         where se.CourseID == courseID
+                                         select new StudentDTO
+                                         {
+                                             SSN = s.SSN,
+                                             Name = s.Name
+                                         }).ToList();
             return students;
         }
 

@@ -135,9 +135,13 @@ namespace Assignment2.Controllers
             {
                 _service.DeleteCourse(id); // this may throw a not found exception
             } 
-            catch (CourseNotFoundException e)
+            catch (CourseNotFoundException)
             {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
+            catch (DeleteFromDatabaseException)
+            {
+                throw new HttpResponseException(HttpStatusCode.InternalServerError);
             }
         }
         #endregion
