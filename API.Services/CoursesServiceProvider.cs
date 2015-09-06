@@ -136,8 +136,9 @@ namespace API.Services
                 throw new TemplateCourseNotFoundException();
             }
 
-            // Get list of students registered in the course
-            List<StudentDTO> students = GetStudentsInCourse(course.ID);
+            // Update the start and end date based on the view model
+            course.StartDate = updateCourse.StartDate;
+            course.EndDate = updateCourse.EndDate;
 
             // If all is successfull, we save our changes
             _db.SaveChanges();
@@ -176,13 +177,14 @@ namespace API.Services
                 throw new CourseNotFoundException();
             }
 
+            _db.Database.BeginTransaction();
             // Remove all the students from the course
             foreach ( Entities.StudentEnrollment enrollment in _db.StudentEnrollment.Where(x => x.CourseID == course.ID))
             {
                 _db.StudentEnrollment.Remove(enrollment);
             }
-
             _db.Courses.Remove(course); // Remove the course
+            _db.Database.CurrentTransaction.Commit();
             _db.SaveChanges();
         }
 

@@ -16,36 +16,18 @@ namespace Assignment2.Controllers
         #region Private methods and properties
 
         private static CoursesServiceProvider _service;
-       //private static List<CourseDTO>_courses;
+        //private static List<CourseDTO>_courses;
 
+        #endregion
+
+        #region Constructor
         public CoursesController()
         {
             _service = new CoursesServiceProvider();
         }
-
-        /// <summary>
-        /// This method gets the course with the given id.
-        /// It whould be better to use filter to handle these exceptions but it is
-        /// required in this assigment.
-        /// </summary>
-        /// <param name="id">id of the course</param>
-        /// <returns>a single course</returns>
-        [HttpGet]
-        [Route("{id:int}", Name ="GetCourse")]
-        public IHttpActionResult _GetCourseById(int id)
-        {
-            try {
-                return Ok(_service.GetCourseByID(id));
-            }
-            catch (CourseNotFoundException e)
-            {
-                throw new HttpResponseException(HttpStatusCode.NotFound);
-            }
-        }
         #endregion
 
-        #region public methods
-
+        #region Courses
         /// <summary>
         /// This method gets a list of avalible courses
         /// </summary>
@@ -82,6 +64,40 @@ namespace Assignment2.Controllers
         }
 
         /// <summary>
+        /// This method gets a list of courses taught during the given semster
+        /// </summary>
+        /// <param name="semester">The semester, example: "20153"</param>
+        /// <returns>A list of courses that are taught on the semster given</returns>
+        [HttpGet]
+        [Route("")]
+        public IHttpActionResult GetCoursesBySemester(string semester)
+        {
+            return Ok(_service.GetCoursesBySemester(semester));
+        }
+        #endregion
+
+        #region Courses/{id}
+        /// <summary>
+        /// This method gets the course with the given id.
+        /// It whould be better to use filter to handle these exceptions but it is
+        /// required in this assigment.
+        /// </summary>
+        /// <param name="id">id of the course</param>
+        /// <returns>a single course</returns>
+        [HttpGet]
+        [Route("{id:int}", Name ="GetCourse")]
+        public IHttpActionResult _GetCourseById(int id)
+        {
+            try {
+                return Ok(_service.GetCourseByID(id));
+            }
+            catch (CourseNotFoundException e)
+            {
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
+        }
+
+        /// <summary>
         /// This method updates the given course properties for a single given course
         /// </summary>
         /// <param name="editedCourse">The edited course</param>
@@ -91,7 +107,10 @@ namespace Assignment2.Controllers
         [ResponseType(typeof(UpdateCourseViewModel))]
         public IHttpActionResult UpdateCourse(int id, UpdateCourseViewModel editedCourse)
         {
-            if (!ModelState.IsValid) { throw new HttpResponseException(HttpStatusCode.PreconditionFailed); }
+            if (!ModelState.IsValid || editedCourse.StartDate.Equals(DateTime.MinValue) || editedCourse.EndDate.Equals(DateTime.MinValue))
+            {
+                throw new HttpResponseException(HttpStatusCode.PreconditionFailed);
+            }
 
             try {
                 CourseDetailsDTO course = _service.UpdateCourse(id, editedCourse);
@@ -121,7 +140,9 @@ namespace Assignment2.Controllers
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
         }
+        #endregion
 
+        #region Courses/{id}/students
         /// <summary>
         /// Get a list of all the students in a given course
         /// </summary>
