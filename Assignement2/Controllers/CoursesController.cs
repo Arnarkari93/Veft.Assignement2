@@ -13,19 +13,12 @@ namespace Assignment2.Controllers
     [RoutePrefix("api/v1/courses")]
     public class CoursesController : ApiController
     {
-        #region Private methods and properties
-
         private static CoursesServiceProvider _service;
-        //private static List<CourseDTO>_courses;
 
-        #endregion
-
-        #region Constructor
         public CoursesController()
         {
             _service = new CoursesServiceProvider();
         }
-        #endregion
 
         #region Courses
         /// <summary>
@@ -199,6 +192,12 @@ namespace Assignment2.Controllers
         #endregion
 
         #region Courses/{id}/students/{ssn}
+        /// <summary>
+        /// This method gets the given student in a given course
+        /// </summary>
+        /// <param name="id">The id of the course</param>
+        /// <param name="ssn">The SSN of the student</param>
+        /// <returns>The student</returns>
         [HttpGet]
         [Route("{id:int}/students/{ssn}", Name = "GetStudentInCourse")]
         public IHttpActionResult GetStudentInCourse(int id, string ssn)
